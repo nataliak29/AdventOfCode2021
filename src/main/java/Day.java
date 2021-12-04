@@ -70,7 +70,7 @@ public abstract class Day {
         return "";
     }
 
-    public String partTwoAnswer(String resource) throws FileNotFoundException {
+    public String partTwoAnswer(String resource) throws IOException {
         return "";
     }
 

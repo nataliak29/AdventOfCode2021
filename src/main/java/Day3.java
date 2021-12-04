@@ -1,15 +1,6 @@
-import javafx.util.Pair;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class Day3 extends Day {
@@ -23,64 +14,45 @@ public class Day3 extends Day {
         System.out.println("Part1: " + new Day3().partOneAnswer(RESOURCE));
         System.out.println("Part2: "+ new Day3().partTwoAnswer(RESOURCE));
     }
-    public int [][] createMatrixFromResource(String resource) throws IOException {
+    public ArrayList<ArrayList<Integer>> createMatrixFromResource(String resource) throws IOException {
         int fileLength = fileLength(resource);
         int lineLength = fileFirstLineLength(resource);
-        int[][] bitsArray = new int[fileLength][lineLength];
-        //ArrayList<ArrayList<Integer>> bitsArray2 = new ArrayList<ArrayList<Integer>>();
+        ArrayList<ArrayList<Integer>> bitsMatrix = new ArrayList<ArrayList<Integer>>();
         Scanner inFile = new Scanner(new FileReader(resource));
-        for (int j = 0; j < fileLength; j++) {
+        for (int row = 0; row < fileLength; row++) {
             String line = inFile.nextLine();
             String[] data = line.split("");
-            for (int i = 0; i < lineLength; i++) {
-                bitsArray[j][i] = Integer.parseInt(data[i]);
-                //ArrayList<Integer> ls= new ArrayList<Integer>(Arrays.asList(2, 0));
-                //bitsArray2.set() = Integer.parseInt(data[i]);
-                //System.out.println(" i "+i+ " j "+ j + "bitsArray[i][j]"+ bitsArray[i][j]);
+            ArrayList<Integer> thisRow = new ArrayList<Integer>();
+            for (int column = 0; column < lineLength; column++) {
+                thisRow.add(Integer.parseInt(data[column]));
             }
+            bitsMatrix.add(thisRow);
         }
         inFile.close();
-        return bitsArray;
+        return bitsMatrix;
     }
 
-    public int [][] splitColumnsIntoArrayFromResource(String resource) throws IOException {
-        int fileLength = fileLength(resource);
-        int lineLength = fileFirstLineLength(resource);
-        int[][] bitsArray = new int[lineLength][fileLength];
-        //ArrayList<ArrayList<Integer>> bitsArray2 = new ArrayList<ArrayList<Integer>>();
-        Scanner inFile = new Scanner(new FileReader(resource));
-        for ( int j =0 ; j<fileLength;j++) {
-            String line = inFile.nextLine();
-            String[] data = line.split("");
-            for (int i = 0; i < lineLength; i++) {
-                bitsArray[i][j] = Integer.parseInt(data[i]);
-                //ArrayList<Integer> ls= new ArrayList<Integer>(Arrays.asList(2, 0));
-                //bitsArray2.set() = Integer.parseInt(data[i]);
-                //System.out.println(" i "+i+ " j "+ j + "bitsArray[i][j]"+ bitsArray[i][j]);
-            }
+
+
+
+    public ArrayList<Integer> getColumnFromMatrix(ArrayList<ArrayList<Integer>> matrix, int index){
+        int matrixSize = matrix.size();
+         ArrayList<Integer> requestedColumn = new ArrayList<>();
+        for (int i = 0; i < matrixSize; i++){
+            requestedColumn.add(matrix.get(i).get(index));
         }
-            inFile.close();
-        return bitsArray;
-    }
-
-    public int[] getListFromMatrix(int [][] matrix, int index){
-        int matrixSize = matrix.length;
-        int [] myList = new int[matrixSize];
-        for (int i = 0; i < matrix.length; i++){
-                myList[i] = matrix[i][index];
-        }
-        return myList;
+        return requestedColumn;
 
     }
 
-    public int getMostFrequentBit(int[] list){
-        int listLength = list.length;
+    public int getMostFrequentBitFromArray(ArrayList<Integer> array){
+        int arraySize = array.size();
         int totalSum = 0;
         int mostFrequentBit = 0;
-        for (int i: list){
+        for (int i: array){
             totalSum += i;
         }
-        if (totalSum > listLength / 2){
+        if (totalSum >= (float) arraySize / 2 ){
             mostFrequentBit = 1;
         }
         else {
@@ -89,12 +61,13 @@ public class Day3 extends Day {
         return mostFrequentBit;
     }
 
-    public String[] getEpsilonAndGamma (int [][] bitsArray) {
+    public String[] getEpsilonAndGammaArray(ArrayList<ArrayList<Integer>> matrix) {
         StringBuffer epsilon  = new StringBuffer();
         StringBuffer gamma = new StringBuffer();
 
-        for (int i =0; i<bitsArray.length; i++){
-            int mostFrequentBit = getMostFrequentBit(bitsArray[i]);
+        for (int i =0; i<matrix.get(0).size(); i++){
+            ArrayList<Integer> column = getColumnFromMatrix(matrix, i);
+            int mostFrequentBit = getMostFrequentBitFromArray(column);
             int leastFrequentBit = 0;
             if (mostFrequentBit == 0) {
                 leastFrequentBit = 1;
@@ -111,54 +84,77 @@ public class Day3 extends Day {
 
     }
 
+
     public int getPowerConsumption(String[] epsilonAndGammaList) {
         int powerConsumption = Integer.parseInt(epsilonAndGammaList[0],2)
                 * Integer.parseInt(epsilonAndGammaList[1],2);
         return powerConsumption;
     }
 
+    public int getLifeSupportrating(String oxygenGeneratorRating, String CO2ScrubberRating) {
+        int powerConsumption = Integer.parseInt(oxygenGeneratorRating,2)
+                * Integer.parseInt(CO2ScrubberRating,2);
+        return powerConsumption;
+    }
+
     @Override
     public String partOneAnswer(String resource) throws IOException {
-        int[][] array = splitColumnsIntoArrayFromResource(resource);
-        String[] epsilonAndGamma = getEpsilonAndGamma(array);
+        ArrayList<ArrayList<Integer>> array = createMatrixFromResource(resource);
+        String[] epsilonAndGamma = getEpsilonAndGammaArray(array);
         int answer = getPowerConsumption(epsilonAndGamma);
         return String.valueOf(answer);
     }
 
+    public String getTargetRating(ArrayList<ArrayList<Integer>> matrix, String frequency){
+        StringBuffer targetRating  = new StringBuffer();
+        ArrayList<ArrayList<Integer>> matrixCopy = new ArrayList<ArrayList<Integer>>();
+        matrixCopy.addAll(matrix);
 
+        for (int i =0; i<matrixCopy.get(0).size(); i++){
+            ArrayList<Integer> column = getColumnFromMatrix(matrixCopy, i);
+            int mostFrequentBit = getMostFrequentBitFromArray(column);
+            int leastFrequentBit = 0;
+            if (mostFrequentBit == 0) {
+                leastFrequentBit = 1;
+            }
+            else {
+                leastFrequentBit = 0;
+            }
+            int targetBit = 0;
+            if (frequency == "mostFrequent") {
+                targetBit = mostFrequentBit;
+            }
+            else {
+                targetBit = leastFrequentBit;
+            }
 
-    public int [][] oxygenGeneratorRating (String resource) throws IOException {
-        //ArrayList<String> stringArray = getResourceAsStringArray(resource);
-        int [][] bitsArray = createMatrixFromResource(resource);
-        //String mostFrequentBits = getEpsilonAndGamma(bitsArray)[0];
-        //System.out.println("mostFrequentBits "+mostFrequentBits);
-        for (int i =0;i < 20; i ++){
-            //int [] myArray = bitsArray[][i];
-            int [] columnBeingProcessed = getListFromMatrix(bitsArray,i);
-            int mostFrequentBit = getMostFrequentBit(columnBeingProcessed);
-            int arrayLength = bitsArray.length;
-            //char bit = mostFrequentBits.charAt(i);
-            System.out.println("arrayLength "+arrayLength);
-            System.out.println("mostFrequentBit "+mostFrequentBit);
-            //int i = list.size() - 1; i >= 0 ; i--
-            for ( int j =arrayLength-1; j >=0; j--){
-                System.out.println("columnBeingProcessed[j]  "+columnBeingProcessed[j]);
-                if (columnBeingProcessed[j] != mostFrequentBit && arrayLength!=1 ){
-                    System.out.println("bitsArray[i]  "+bitsArray[i]);
-                    //bitsArray[i] = null;
-                    //stringArray.remove(j);
+            targetRating.append(String.valueOf(targetBit));
+            if(matrixCopy.size()==1){
+                StringBuffer lastElement = new StringBuffer();
+                for (int k=0; k<matrixCopy.get(0).size(); k++){
+                    lastElement.append(String.valueOf(matrixCopy.get(0).get(k)));
+
+                }
+                return String.valueOf(lastElement);
+            }
+            for (int j =matrixCopy.size()-1; j>=0; j--) {
+                if( matrixCopy.get(j).get(i) != targetBit){
+                    matrixCopy.remove(j);
                 }
 
             }
-        }
-        return  bitsArray;
 
+        }
+        return String.valueOf(targetRating);
     }
 
+
     @Override
-    public String partTwoAnswer(String resource) {
-        ArrayList<String> array = getResourceAsStringArray(resource);
-        int answer = 0;
+    public String partTwoAnswer(String resource) throws IOException {
+        ArrayList<ArrayList<Integer>> matrix = createMatrixFromResource(resource);
+        String oxygenGeneratorRating = getTargetRating(matrix, "mostFrequent");
+        String CO2ScrubberRating = getTargetRating(matrix, "leastFrequent");
+        int answer = getLifeSupportrating(oxygenGeneratorRating, CO2ScrubberRating);
         return String.valueOf(answer);
     }
 

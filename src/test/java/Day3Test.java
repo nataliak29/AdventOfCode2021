@@ -1,11 +1,9 @@
 import junit.framework.TestCase;
-import org.junit.Assert;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
 
 public class Day3Test extends TestCase {
     private static final String RESOURCE = "src/test/resources/day3_test.txt";
@@ -13,81 +11,89 @@ public class Day3Test extends TestCase {
     Day3 day3 = new Day3();
 
     public void testGetMostFrequentBitZeros() {
-        int[] inputList  = {0,0,0,0};
-        int actualResult = day3.getMostFrequentBit(inputList);
+        ArrayList<Integer> inputList = new ArrayList<Integer>(Arrays.asList(0,0,0,0));
+        int actualResult = day3.getMostFrequentBitFromArray(inputList);
         int expectedResult = 0;
         assertEquals(actualResult,expectedResult);
     }
 
     public void testGetMostFrequentBitOnes() {
-        int[] inputList  = {1,1,1,1};
-        int actualResult = day3.getMostFrequentBit(inputList);
+        ArrayList<Integer> inputList = new ArrayList<Integer>(Arrays.asList(1,1,1,1));
+        int actualResult = day3.getMostFrequentBitFromArray(inputList);
         int expectedResult = 1;
         assertEquals(actualResult,expectedResult);
     }
 
     public void testGetMostFrequentBitMixZero() {
-        int[] inputList  = {1,0,1,0,0};
-        int actualResult = day3.getMostFrequentBit(inputList);
+        ArrayList<Integer> inputList = new ArrayList<Integer>(Arrays.asList(1,0,1,0,0));
+        int actualResult = day3.getMostFrequentBitFromArray(inputList);
         int expectedResult = 0;
         assertEquals(actualResult,expectedResult);
     }
 
     public void testGetMostFrequentBitMixOne() {
-        int[] inputList  = {1,1,1,0,0};
-        int actualResult = day3.getMostFrequentBit(inputList);
+        ArrayList<Integer> inputList = new ArrayList<Integer>(Arrays.asList(1,1,1,0,0));
+        int actualResult = day3.getMostFrequentBitFromArray(inputList);
         int expectedResult = 1;
         assertEquals(actualResult,expectedResult);
     }
 
-    public void testSplitColumnsIntoArrayFromResource() throws IOException {
-        int [][] actualArray =  day3.splitColumnsIntoArrayFromResource(RESOURCE_SMALL);
-        int [][] expectedArray = {{0,1,1}, {0,1,1}, {0,1,0}, {0,0,0}};
-        assertTrue(Arrays.deepEquals(actualArray, expectedArray));
+    public void testGetMostFrequentBitEqual() {
+        ArrayList<Integer> inputList = new ArrayList<Integer>(Arrays.asList(1,1,0,0));
+        int actualResult = day3.getMostFrequentBitFromArray(inputList);
+        int expectedResult = 1;
+        assertEquals(actualResult,expectedResult);
     }
+
+
 
     public void testCreateMatrixFromResource() throws IOException {
-        int [][] actualArray =  day3.createMatrixFromResource(RESOURCE_SMALL);
-        int [][] expectedArray = {{0,0,0,0}, {1,1,1,0},{1, 1,0, 0}};
-        assertTrue(Arrays.deepEquals(actualArray, expectedArray));
-
+        ArrayList<ArrayList<Integer>> actualArray =  day3.createMatrixFromResource(RESOURCE_SMALL);
+        ArrayList<ArrayList<Integer>> expectedArray = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> rowOne = new ArrayList<Integer>(Arrays.asList(0,0,0,0));
+        ArrayList<Integer> rowTwo = new ArrayList<Integer>(Arrays.asList(1,1,1,0));
+        ArrayList<Integer> rowThree = new ArrayList<Integer>(Arrays.asList(1,1,0,0));
+        expectedArray.add(rowOne);
+        expectedArray.add(rowTwo);
+        expectedArray.add(rowThree);
+        assertTrue(Arrays.deepEquals(new ArrayList[]{actualArray},
+                new ArrayList[]{expectedArray}));
     }
 
-    public void testGetEpsilonAndGamma() {
-        int [][] inputArray = {{0,1,1}, {0,1,1}, {0,1,0}};
-        String[] expectedList = {"110","001"};
-        String[] actualList = day3.getEpsilonAndGamma(inputArray);
+
+    public void testGetEpsilonAndGammaArray() {
+        ArrayList<ArrayList<Integer>> inputArray = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> rowOne = new ArrayList<Integer>(Arrays.asList(0,1,1));
+        ArrayList<Integer> rowTwo = new ArrayList<Integer>(Arrays.asList(0,1,1));
+        ArrayList<Integer> rowThree = new ArrayList<Integer>(Arrays.asList(0,1,0));
+        inputArray.add(rowOne);
+        inputArray.add(rowTwo);
+        inputArray.add(rowThree);
+        String[] expectedList = {"011","100"};
+        String[] actualList = day3.getEpsilonAndGammaArray(inputArray);
         assertTrue(Arrays.deepEquals(actualList, expectedList));
     }
 
-    public void testPartOneAnswer() throws IOException {
+    public void testPartOneAnswerArray() throws IOException {
         assertEquals(String.valueOf(198),day3.partOneAnswer(RESOURCE));
     }
 
-    public void testGetListFromMatrix() {
-        int numberOfDifferentElements = 0;
-        int [][] inputArray = {{0,1,1,2}, {0,1,1,1}, {0,1,0,3}};
-        int index = 3;
-        int [] expectedList = {2,1,3};
 
-        int [] actualList = day3.getListFromMatrix(inputArray,index);
-        for (int k=0; k<expectedList.length; k++) {
-            if( actualList[k] != expectedList[k]){
-                numberOfDifferentElements++;
-            }
-        }
-        //assertEquals(expectedList,actualList);
-        assertEquals(0,numberOfDifferentElements);
+    public void testGetColumnFromMatrix() {
+        ArrayList<ArrayList<Integer>> inputArray = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> rowOne = new ArrayList<Integer>(Arrays.asList(0,0,0,0));
+        ArrayList<Integer> rowTwo = new ArrayList<Integer>(Arrays.asList(1,1,1,0));
+        ArrayList<Integer> rowThree = new ArrayList<Integer>(Arrays.asList(1,1,0,0));
+        inputArray.add(rowOne);
+        inputArray.add(rowTwo);
+        inputArray.add(rowThree);
+        int index = 2;
+        ArrayList<Integer> expectedArray = new ArrayList<Integer>(Arrays.asList(0,1,0));
+        ArrayList<Integer> actualArray = day3.getColumnFromMatrix(inputArray,index);
+        assertEquals(expectedArray,actualArray);
     }
 
-    //public void testOxygenGeneratorRating() throws IOException {
-        //int [][] actualList = day3.oxygenGeneratorRating(RESOURCE);
-        //for (String s:actualList){
-        //    System.out.println(s);
-       // }
-        //assertTrue(Arrays.deepEquals(actualList, expectedList));
-    //}
-
-    public void testPartTwoAnswer() {
+    public void testPartTwoAnswer() throws IOException {
+        assertEquals(String.valueOf(230),day3.partTwoAnswer(RESOURCE));
     }
 }
