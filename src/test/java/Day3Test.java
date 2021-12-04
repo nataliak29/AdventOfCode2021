@@ -42,8 +42,15 @@ public class Day3Test extends TestCase {
 
     public void testSplitColumnsIntoArrayFromResource() throws IOException {
         int [][] actualArray =  day3.splitColumnsIntoArrayFromResource(RESOURCE_SMALL);
-        int [][] expectedArray = {{0,1,1}, {0,1,1}, {0,1,0}};
+        int [][] expectedArray = {{0,1,1}, {0,1,1}, {0,1,0}, {0,0,0}};
         assertTrue(Arrays.deepEquals(actualArray, expectedArray));
+    }
+
+    public void testCreateMatrixFromResource() throws IOException {
+        int [][] actualArray =  day3.createMatrixFromResource(RESOURCE_SMALL);
+        int [][] expectedArray = {{0,0,0,0}, {1,1,1,0},{1, 1,0, 0}};
+        assertTrue(Arrays.deepEquals(actualArray, expectedArray));
+
     }
 
     public void testGetEpsilonAndGamma() {
@@ -57,12 +64,29 @@ public class Day3Test extends TestCase {
         assertEquals(String.valueOf(198),day3.partOneAnswer(RESOURCE));
     }
 
-    public void testOxygenGeneratorRating() {
-        int [][] inputArray = {{0,1,1}, {0,1,1}, {0,4,0}};
-        String[] expectedList = {"110","001"};
-        String[] actualList = day3.oxygenGeneratorRating(inputArray);
-        //assertTrue(Arrays.deepEquals(actualList, expectedList));
+    public void testGetListFromMatrix() {
+        int numberOfDifferentElements = 0;
+        int [][] inputArray = {{0,1,1,2}, {0,1,1,1}, {0,1,0,3}};
+        int index = 3;
+        int [] expectedList = {2,1,3};
+
+        int [] actualList = day3.getListFromMatrix(inputArray,index);
+        for (int k=0; k<expectedList.length; k++) {
+            if( actualList[k] != expectedList[k]){
+                numberOfDifferentElements++;
+            }
+        }
+        //assertEquals(expectedList,actualList);
+        assertEquals(0,numberOfDifferentElements);
     }
+
+    //public void testOxygenGeneratorRating() throws IOException {
+        //int [][] actualList = day3.oxygenGeneratorRating(RESOURCE);
+        //for (String s:actualList){
+        //    System.out.println(s);
+       // }
+        //assertTrue(Arrays.deepEquals(actualList, expectedList));
+    //}
 
     public void testPartTwoAnswer() {
     }
