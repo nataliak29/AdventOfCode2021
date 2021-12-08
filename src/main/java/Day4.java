@@ -91,17 +91,38 @@ public class Day4 extends Day{
 
     public Pair<String[][],Integer> findBingoBoardWinner(ArrayList<String> numbersDrawn, ArrayList<String[][]> gameBoards) {
         int winnerBoard = -1;
-        String[][] blankBoard = new String[1][1];
         for (int num = 0; num< numbersDrawn.size(); num++){
             int numberDrawn = Integer.parseInt(numbersDrawn.get(num));
             for (int boardIndex = 0; boardIndex < gameBoards.size(); boardIndex++){
                 String[][] thisGameBoard = gameBoards.get(boardIndex);
                 String[][] processedGameBoard = crossOutMatchingNumberOnBoard(thisGameBoard, numberDrawn);
-                if (checkIfMatrixWon(processedGameBoard) == true){
+                if (checkIfMatrixWon(processedGameBoard)){
                     winnerBoard = boardIndex;
                     String[][] winnerGameBoard = gameBoards.get(winnerBoard);
-                    Pair< String[][],Integer> winnerAndWinningNumber = new Pair<>(winnerGameBoard,numberDrawn);
-                    return winnerAndWinningNumber;
+                    return new Pair<>(winnerGameBoard,numberDrawn);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Pair<String[][],Integer> findLastBingoBoardWinner(ArrayList<String> numbersDrawn, ArrayList<String[][]> gameBoards) {
+        int numberOfBoardsWon = 0;
+        int totalNumberOfBoards = gameBoards.size();
+        for (int num = 0; num< numbersDrawn.size(); num++){
+            int numberDrawn = Integer.parseInt(numbersDrawn.get(num));
+            for (int boardIndex = gameBoards.size() - 1; boardIndex >= 0; boardIndex--){
+                String[][] thisGameBoard = gameBoards.get(boardIndex);
+                String[][] processedGameBoard = crossOutMatchingNumberOnBoard(thisGameBoard, numberDrawn);
+                if (checkIfMatrixWon(processedGameBoard) && numberOfBoardsWon != totalNumberOfBoards - 1 ){
+                    numberOfBoardsWon += 1;
+                    gameBoards.remove(boardIndex);
+                }
+                else {
+                    if (checkIfMatrixWon(processedGameBoard) && numberOfBoardsWon == totalNumberOfBoards - 1) {
+                        String[][] winnerGameBoard = processedGameBoard;
+                        return new Pair<>(winnerGameBoard, numberDrawn);
+                    }
                 }
             }
         }
@@ -133,7 +154,11 @@ public class Day4 extends Day{
 
     @Override
     public String partTwoAnswer(String resource) {
-        int answer = 0;
+        ArrayList<String> inputArrayString =  getResourceAsStringArray(resource);
+        ArrayList<String> numbersDrawn = getNumbersDrawn(inputArrayString);
+        ArrayList<String[][]> gameBoards= getGameBoardMatrix(inputArrayString);
+        Pair<String[][],Integer> winnerAndWinningNumber = findLastBingoBoardWinner(numbersDrawn, gameBoards);
+        int answer =  sumOfNumbersOnTheBoard(winnerAndWinningNumber.getKey()) * winnerAndWinningNumber.getValue() ;
         return String.valueOf(answer);
     }
 }

@@ -110,4 +110,10 @@ public class Day4Test extends TestCase {
        String expectedAnswer = "4512";
        assertEquals(expectedAnswer,actualAnswer);
     }
+
+    public void testPartTwoAnswer() throws FileNotFoundException {
+        String actualAnswer = day4.partTwoAnswer(RESOURCE);
+        String expectedAnswer = "1924";
+        assertEquals(expectedAnswer,actualAnswer);
+    }
 }
