@@ -15,6 +15,9 @@ public class Day5Test extends TestCase {
     }
 
     public void testPartTwoAnswer() {
+        String actualAnswer = day5.partTwoAnswer(RESOURCE);
+        String expectedAnswer = "12";
+        assertEquals(expectedAnswer,actualAnswer);
     }
 
     public void testGetCoordinatesChangeArray() {
@@ -44,6 +47,16 @@ public class Day5Test extends TestCase {
         assertEquals(firstCoordinatesChange.isHorizontalOrVertical(),true);
     }
 
+    public void testIsDiagonal() {
+        Day5.CoordinatesChange firstCoordinatesChange = new Day5.CoordinatesChange(1, 1, 3, 3);
+        assertEquals(firstCoordinatesChange.isDiagonal(),true);
+    }
+
+    public void testIsDiagonalCase2() {
+        Day5.CoordinatesChange firstCoordinatesChange = new Day5.CoordinatesChange(9, 7, 7, 9);
+        assertEquals(firstCoordinatesChange.isDiagonal(),true);
+    }
+
     public void testGridEquals() {
         Day5.Grid grid = new Day5.Grid(5, 2);
         Day5.Grid gridCopy = new Day5.Grid(5, 2);
@@ -71,6 +84,30 @@ public class Day5Test extends TestCase {
         actualGrid.addLineSegment(coordinatesChange);
         assertEquals(actualGrid, expectedGrid);
     }
+
+    public void testAddLineSegmentDiagonal() {
+        Day5.Grid expectedGrid = new Day5.Grid(4, 4);
+        expectedGrid.setElement(1, 1, 1);
+        expectedGrid.setElement(2, 2, 1);
+        expectedGrid.setElement(3, 3, 1);
+        Day5.Grid actualGrid = new Day5.Grid(4, 4);
+        Day5.CoordinatesChange coordinatesChange = new Day5.CoordinatesChange(1, 1, 3, 3);
+        actualGrid.addLineSegment(coordinatesChange);
+        assertEquals(actualGrid, expectedGrid);
+    }
+
+    public void testAddLineSegmentDiagonal2() {
+        Day5.Grid expectedGrid = new Day5.Grid(10, 10);
+        expectedGrid.setElement(9, 7, 1);
+        expectedGrid.setElement(8, 8, 1);
+        expectedGrid.setElement(7, 9, 1);
+        Day5.Grid actualGrid = new Day5.Grid(10, 10);
+        Day5.CoordinatesChange coordinatesChange = new Day5.CoordinatesChange(9, 7, 7, 9);
+        actualGrid.addLineSegment(coordinatesChange);
+        assertEquals(actualGrid, expectedGrid);
+    }
+
+
 
 
 }

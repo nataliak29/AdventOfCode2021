@@ -32,7 +32,16 @@ public class Day5 extends Day {
 
     @Override
     public String partTwoAnswer(String resource) {
-        int answer =  -1 ;
+        ArrayList<String> inputArray = getResourceAsStringArray(resource);
+        ArrayList<CoordinatesChange> coordinatesChangeArray = getCoordinatesChangeArray (inputArray);
+        Pair<Integer,Integer> gridSize = getRequiredGridSize(coordinatesChangeArray);
+        Grid grid = new Grid(gridSize.getKey(), gridSize.getValue());
+        for (CoordinatesChange cc : coordinatesChangeArray){
+            if (cc.isHorizontalOrVertical() || cc.isDiagonal() ) {
+                grid.addLineSegment(cc);
+            }
+        }
+        int answer =  grid.countElementsWithMultipleIntersections(2);
         return String.valueOf(answer);
     }
 
@@ -78,39 +87,40 @@ public class Day5 extends Day {
     }
 
     static class Grid {
-        int [][] grid;
+        int[][] grid;
         int sizeOfX;
         int sizeOfY;
 
-        public Grid(int sizeOfX, int sizeOfY){
+        public Grid(int sizeOfX, int sizeOfY) {
             this.sizeOfX = sizeOfX;
             this.sizeOfY = sizeOfY;
             grid = new int[sizeOfX][sizeOfY];
         }
-        public int getElement( int row, int column){
+
+        public int getElement(int row, int column) {
             return grid[row][column];
         }
 
-        public void setElement( int row, int column, int newValue){
+        public void setElement(int row, int column, int newValue) {
             grid[row][column] = newValue;
         }
 
-        public int countElementsWithMultipleIntersections(int numberOfIntersections){
+        public int countElementsWithMultipleIntersections(int numberOfIntersections) {
             int elementsCount = 0;
-            for (int row = 0; row < sizeOfX; row++){
-                for (int column = 0; column < sizeOfY; column++){
+            for (int row = 0; row < sizeOfX; row++) {
+                for (int column = 0; column < sizeOfY; column++) {
                     if (grid[row][column] >= numberOfIntersections) {
                         elementsCount += 1;
                     }
                 }
             }
-            return  elementsCount;
+            return elementsCount;
         }
 
         public String toString() {
             StringBuffer stringBuffer = new StringBuffer();
-            for (int row = 0; row < sizeOfX; row++){
-                for (int column = 0; column < sizeOfY; column++){
+            for (int row = 0; row < sizeOfX; row++) {
+                for (int column = 0; column < sizeOfY; column++) {
                     stringBuffer.append(String.valueOf(grid[row][column]));
                 }
                 stringBuffer.append("\n");
@@ -129,9 +139,9 @@ public class Day5 extends Day {
             }
 
             final Grid other = (Grid) obj;
-            for (int row = 0; row < sizeOfX; row++){
-                for (int column = 0; column < sizeOfY; column++){
-                    if (grid[row][column] != other.getElement(row,column)){
+            for (int row = 0; row < sizeOfX; row++) {
+                for (int column = 0; column < sizeOfY; column++) {
+                    if (grid[row][column] != other.getElement(row, column)) {
                         return false;
                     }
                 }
@@ -146,13 +156,13 @@ public class Day5 extends Day {
             int YEnd = coordinatesChange.getYEnd();
 
             //vertical line - same X, different Y
-            if ( XStart == XEnd & YStart != YEnd) {
-                if ( YStart > YEnd) {
+            if (XStart == XEnd & YStart != YEnd) {
+                if (YStart > YEnd) {
                     for (int column = YEnd; column <= YStart; column++) {
                         grid[XStart][column] += 1;
                     }
                 }
-                if ( YStart < YEnd) {
+                if (YStart < YEnd) {
                     for (int column = YStart; column <= YEnd; column++) {
                         grid[XStart][column] += 1;
                     }
@@ -160,21 +170,40 @@ public class Day5 extends Day {
             }
 
             //horizontal line - same Y, different X
-            if ( XStart != XEnd & YStart == YEnd) {
-                if ( XStart > XEnd) {
-                    for (int row= XEnd; row <= XStart; row++) {
+            if (XStart != XEnd & YStart == YEnd) {
+                if (XStart > XEnd) {
+                    for (int row = XEnd; row <= XStart; row++) {
                         grid[row][YStart] += 1;
                     }
                 }
-                if ( XStart < XEnd) {
+                if (XStart < XEnd) {
                     for (int row = XStart; row <= XEnd; row++) {
                         grid[row][YStart] += 1;
                     }
                 }
             }
-        }
 
+            //diagonal line
+
+            if (Math.abs(XStart - XEnd) == Math.abs(YStart - YEnd)) {
+                int slope = (YEnd - YStart) / (XEnd - XStart);
+                int coefficient = - slope * YStart + XStart ;
+                int maxColumn = coordinatesChange.getMaxColumn();
+                int minColumn = coordinatesChange.getMinColumn();
+                int maxRow = coordinatesChange.getMaxRow();
+                int minRow = coordinatesChange.getMinRow();
+                for (int row = minRow; row <= maxRow; row++) {
+                    for (int column = minColumn; column <= maxColumn; column++) {
+                        if (row == coefficient + slope * column) {
+                            grid[row][column] += 1;
+                        }
+                    }
+                }
+            }
+
+        }
     }
+
 
 
      static class CoordinatesChange {
@@ -238,8 +267,62 @@ public class Day5 extends Day {
             }
         }
 
+         public boolean isDiagonal() {
+             if (Math.abs(this.XStart - this.XEnd) ==
+                     Math.abs(this.YStart - this.YEnd) ) {
+                 return true;
+             }
+             else {
+                 return false;
+             }
+         }
+
         public String toString() {
             return "X Start: " + this.XStart + ", Y Start " + this.YStart + "; X End: " + this.XEnd + ", Y End " + this.YEnd;
         }
+
+        public int getMaxColumn() {
+            int maxY = 0;
+            if ( YStart >= YEnd) {
+                maxY = YStart;
+            }
+            else {
+                maxY = YEnd;
+            }
+            return maxY;
+        }
+
+         public int getMinColumn() {
+             int minY = 0;
+             if ( YStart >= YEnd) {
+                 minY = YEnd;
+             }
+             else {
+                 minY = YStart;
+             }
+             return minY;
+         }
+
+         public int getMaxRow() {
+             int maxX = 0;
+             if ( XStart >= XEnd) {
+                 maxX = XStart;
+             }
+             else {
+                 maxX = XEnd;
+             }
+             return maxX;
+         }
+
+         public int getMinRow() {
+             int minX = 0;
+             if ( XStart >= XEnd) {
+                 minX = XEnd;
+             }
+             else {
+                 minX = XStart;
+             }
+             return minX;
+         }
     }
 }
