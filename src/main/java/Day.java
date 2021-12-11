@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public abstract class Day {
 
-    public ArrayList<String> getResourceAsStringArray(String resource) {
+    public static ArrayList<String> getResourceAsStringArray(String resource) {
         List<String> lines = Collections.emptyList();
         try { lines = Files.readAllLines(Paths.get(resource), StandardCharsets.UTF_8); }
         catch (IOException e) {
