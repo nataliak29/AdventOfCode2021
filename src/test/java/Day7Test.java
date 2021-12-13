@@ -1,6 +1,7 @@
 import junit.framework.TestCase;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class Day7Test extends TestCase {
     Day7 day7 = new Day7();
@@ -9,6 +10,12 @@ public class Day7Test extends TestCase {
     public void testPartOneAnswer() throws FileNotFoundException {
         String actualAnswer = day7.partOneAnswer(RESOURCE);
         String expectedAnswer = "37";
+        assertEquals(expectedAnswer, actualAnswer);
+    }
+
+    public void testPartTwoAnswer() throws FileNotFoundException {
+        String actualAnswer = day7.partTwoAnswer(RESOURCE);
+        String expectedAnswer = "168";
         assertEquals(expectedAnswer, actualAnswer);
     }
 
@@ -32,6 +39,21 @@ public class Day7Test extends TestCase {
         int actualTotalFuel = day7.getFuelUsed(inputArray, median);
         int expectedTotalFuel = 25;
         assertEquals(actualTotalFuel, expectedTotalFuel);
-
     }
+
+    public void testCalculateMean() {
+        int[]  inputArray = {2,3,33,10,12,13};
+        int actualMean  = day7.calculateMean(inputArray);
+        int expectedMean = 12;
+        assertEquals(actualMean, expectedMean);
+    }
+
+    public void testGetFuelUsedNonLinear() {
+        ArrayList<String> inputArray = day7.getResourceAsStringArray(RESOURCE);
+        int[] integerList = day7.getIntegersList(inputArray);
+        int actualTotalFuel = day7.getFuelUsedNonLinear(integerList, 2);
+        int expectedTotalFuel = 206;
+        assertEquals(actualTotalFuel, expectedTotalFuel);
+    }
+
 }
