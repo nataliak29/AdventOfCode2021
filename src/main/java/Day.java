@@ -5,10 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public abstract class Day {
 
@@ -19,6 +16,15 @@ public abstract class Day {
             e.printStackTrace();
         }
         return (ArrayList<String>) lines;
+    }
+
+    public int[] getIntegersList(ArrayList<String> inputArray){
+        ArrayList<String> finalArray  = new ArrayList<>(Arrays.asList(inputArray.get(0).split(",")));
+        int[] integerList = new int[finalArray.size()];
+        for (Integer i = 0; i < finalArray.size(); i ++) {
+            integerList[i] = Integer.parseInt(finalArray.get(i));
+        }
+        return  integerList;
     }
 
     public ArrayList<Integer> convertStringArrayToIntegerArray(ArrayList<String> myArray) {
