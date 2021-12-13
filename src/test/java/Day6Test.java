@@ -63,4 +63,25 @@ public class Day6Test extends TestCase {
         int expectedSize = 5934;
         assertEquals(expectedSize, actualSize);
     }
+
+    public void testrunSimuationOptimized5Days() {
+        Long[]  inputArray = {Long.valueOf(3), Long.valueOf(4), Long.valueOf(3), Long.valueOf(1), Long.valueOf(2)};
+        long actualSize  = day6.runSimuationOptimized(inputArray, 5);
+        long expectedSize = 10;
+        assertEquals(expectedSize, actualSize);
+    }
+
+    public void testRunSimuationOptimized18Days() {
+        Long[]  inputArray = {Long.valueOf(3), Long.valueOf(4), Long.valueOf(3), Long.valueOf(1), Long.valueOf(2)};
+        long actualSize  = day6.runSimuationOptimized(inputArray, 18);
+        long expectedSize = 26;
+        assertEquals(expectedSize, actualSize);
+    }
+
+    public void testRunSimuationOptimized80Days() {
+        Long[]  inputArray = {Long.valueOf(3), Long.valueOf(4), Long.valueOf(3), Long.valueOf(1), Long.valueOf(2)};
+        long actualSize  = day6.runSimuationOptimized(inputArray, 80);
+        long expectedSize = 5934;
+        assertEquals(expectedSize, actualSize);
+    }
 }

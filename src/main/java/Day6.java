@@ -20,7 +20,7 @@ public class Day6 extends Day{
     public String partOneAnswer(String resource) throws FileNotFoundException {
         ArrayList<String> inputArray = getResourceAsStringArray(resource);
         Long[] lanternfishArray = getLanternfishArray(inputArray);
-        int answer =  runSimuation (lanternfishArray,80);
+        long answer =  runSimuationOptimized(lanternfishArray,80);
         return String.valueOf(answer);
     }
 
@@ -28,7 +28,7 @@ public class Day6 extends Day{
     public String partTwoAnswer(String resource) {
         ArrayList<String> inputArray = getResourceAsStringArray(resource);
         Long[] lanternfishArray = getLanternfishArray(inputArray);
-        int answer =  runSimuation (lanternfishArray,256);
+        long answer =  runSimuationOptimized(lanternfishArray,256);
         return String.valueOf(answer);
     }
 
@@ -71,13 +71,34 @@ public class Day6 extends Day{
             System.out.println("Day " + dayCount);
             lanternfishArray = processOneDay(lanternfishArray);
             dayCount += 1;
-            //System.out.println("Length of array " + lanternfishArray.length);
         }
-        //for (long f: lanternfishArray){
-            //System.out.println(f);
-        //}
         return lanternfishArray.length;
     }
 
+    public long runSimuationOptimized (Long[] lanternfishArray,int numberOfDays){
+        if (numberOfDays == 0 ){
+            return lanternfishArray.length;
+        }
+        int dayCount = 0;
+        long[] fishAgeCountList = new long[9];
+        for ( long j : lanternfishArray) {
+            fishAgeCountList[(int) j] += 1;
+        }
 
+        while (dayCount < numberOfDays) {
+            System.out.println("Day " + dayCount);
+            long fish0Days = fishAgeCountList[0];
+            for (int i = 1; i < 9; i++){
+                fishAgeCountList[i - 1] = fishAgeCountList[i];
+            }
+            fishAgeCountList[6] += fish0Days;
+            fishAgeCountList[8] = fish0Days;
+            dayCount += 1;
+        }
+        long totalNumberOfFish = 0;
+        for ( int j = 0; j < 9; j++) {
+            totalNumberOfFish += fishAgeCountList[j];
+        }
+        return totalNumberOfFish;
+    }
 }
