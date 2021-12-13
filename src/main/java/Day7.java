@@ -29,8 +29,7 @@ public class Day7 extends Day{
         ArrayList<String> inputArray = getResourceAsStringArray(resource);
         int[] integerList = getIntegersList(inputArray);
         int mean =  calculateMean(integerList);
-        System.out.println(mean);
-        int answer = getFuelUsedNonLinear(integerList, mean);
+        int answer = findMinimalFuelSpend(integerList, mean);
         return String.valueOf(answer);
     }
 
@@ -78,5 +77,16 @@ public class Day7 extends Day{
         return totalFuel;
     }
 
+    public int findMinimalFuelSpend(int[] integerList,int mean) {
+        int fuelSpendMean = getFuelUsedNonLinear(integerList, mean);
+        int minimalFuelSpend = fuelSpendMean;
+        for (int i = mean - 3; i < mean + 3; i ++){
+            int fuelSpend = getFuelUsedNonLinear(integerList, i);
+            if ( fuelSpend < minimalFuelSpend) {
+                minimalFuelSpend = fuelSpend;
+            }
+        }
+        return minimalFuelSpend;
+    }
 
 }

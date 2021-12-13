@@ -1,7 +1,6 @@
 import junit.framework.TestCase;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 public class Day7Test extends TestCase {
     Day7 day7 = new Day7();
@@ -41,6 +40,13 @@ public class Day7Test extends TestCase {
         assertEquals(actualTotalFuel, expectedTotalFuel);
     }
 
+    public void testCalculateMeanDataFromTestsFile() {
+        int[]  inputArray = {16,1,2,0,4,2,7,1,2,14};
+        int actualMean  = day7.calculateMean(inputArray);
+        int expectedMean = 5;
+        assertEquals(actualMean, expectedMean);
+    }
+
     public void testCalculateMean() {
         int[]  inputArray = {2,3,33,10,12,13};
         int actualMean  = day7.calculateMean(inputArray);
@@ -48,11 +54,10 @@ public class Day7Test extends TestCase {
         assertEquals(actualMean, expectedMean);
     }
 
-    public void testGetFuelUsedNonLinear() {
-        ArrayList<String> inputArray = day7.getResourceAsStringArray(RESOURCE);
-        int[] integerList = day7.getIntegersList(inputArray);
-        int actualTotalFuel = day7.getFuelUsedNonLinear(integerList, 2);
-        int expectedTotalFuel = 206;
+    public void testGetFuelUsedNonLinearFromTestFile() {
+        int[] inputArray = {16,1,2,0,4,2,7,1,2,14};
+        int actualTotalFuel = day7.findMinimalFuelSpend(inputArray, day7.calculateMean(inputArray)) ;
+        int expectedTotalFuel = 168;
         assertEquals(actualTotalFuel, expectedTotalFuel);
     }
 
