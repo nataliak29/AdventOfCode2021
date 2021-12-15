@@ -144,20 +144,4 @@ public class Day8Test extends TestCase {
         assertEquals(expectedMap,actualMap);
     }
 
-    public void testError(){
-        String l = "fbegcd cbd adcefb dageb afcb bc aefdc ecdab fgdeca fcdbega | efabcd cedba gadfec cb";
-        ArrayList<String> outputsArray = day8.getAllOutputs(l);
-        ArrayList<String> inputsArray = day8.getAllInputs(l);
-        System.out.println("INPUTS");
-        for (String in : inputsArray){
-            System.out.println(in);
-        }
-        System.out.println("INPUTS");
-        HashMap<Integer, String> decodeDigitsMap = day8.decodeDigits(inputsArray);
-        Integer decodeOutputDigits = day8.decodeOutputDigits(outputsArray, decodeDigitsMap);
-        System.out.println("record " + l + " output " + decodeOutputDigits);
-
-    }
-
-
 }
