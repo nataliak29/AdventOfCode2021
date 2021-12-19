@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Day10 extends Day {
 
@@ -25,7 +26,9 @@ public class Day10 extends Day {
     @Override
     public String partTwoAnswer(String resource) {
         ArrayList<String> inputArray = getResourceAsStringArray(resource);
-        int answer = -1;
+        ArrayList<Long> points = pointsFromMissingCharacters(inputArray);
+        Collections.sort(points);
+        Long answer = points.get(points.size()/2);
         return String.valueOf(answer);
     }
 
@@ -40,6 +43,19 @@ public class Day10 extends Day {
             }
         }
         return totalPoints;
+    }
+
+    public ArrayList<Long> pointsFromMissingCharacters(ArrayList<String> inputArray) {
+        ArrayList<Long> points = new ArrayList<Long>();
+        for (String line : inputArray) {
+            Day10.NavigationSubsystemLine navigationSubsystemLine = new Day10.NavigationSubsystemLine(line);
+            String lineToAutoComplete = navigationSubsystemLine.getLineToAutoComplete();
+            long score = navigationSubsystemLine.autoCompleteScore(lineToAutoComplete);
+            if (score != 0){
+                points.add(score);
+            }
+        }
+        return points;
     }
 
     static class NavigationSubsystemLine {
@@ -70,14 +86,21 @@ public class Day10 extends Day {
         }
 
         public String getCorruptedCharacter() {
-            findCorruptedCharacter(line);
+            findCorruptedAndMissingCharacters(line);
             return corruptedCharacter;
         }
 
-        public String findCorruptedCharacter(String line) {
+        public String getLineToAutoComplete() {
+            String result = findCorruptedAndMissingCharacters(line);
+            if (corruptedCharacter == null) {
+                return result;
+            }
+            return "";
+        }
+
+        public String findCorruptedAndMissingCharacters(String line) {
             StringBuffer lineBf = new StringBuffer();
             lineBf.append(line);
-            System.out.println("Line " + line);
             for (int i = 0; i <= lineBf.length() - 2; i++) {
                 String nextString = String.valueOf(lineBf.charAt(i + 1));
                 String thisString = String.valueOf(lineBf.charAt(i));
@@ -88,20 +111,47 @@ public class Day10 extends Day {
                     if (legalExpressions.contains(expression.toString())) {
                         lineBf.replace(i, i + 2, "");
                     } else {
-                        System.out.println("Corrupted " + nextString);
                         corruptedCharacter = nextString;
                         return lineBf.toString();
                     }
                 }
-
             }
-
             if (lineBf.toString().equals(line)) {
                 return lineBf.toString();
             } else {
-                findCorruptedCharacter(lineBf.toString());
+                return findCorruptedAndMissingCharacters(lineBf.toString());
             }
-            return "";
+        }
+
+        public int missingCharacterScore(String character){
+            if (character.equals(")")) {
+                return 1;
+            }
+            if (character.equals("]")){
+                return 2;
+            }
+            if (character.equals("}")){
+                return 3;
+            }
+            if (character.equals(">")){
+                return 4;
+            }
+            return 0;
+        }
+
+        public long autoCompleteScore(String line){
+            String[] lineArray = line.split("");
+            long finalScore = 0;
+            for (int i = line.length() - 1; i >= 0; i--){
+                String s = lineArray[i];
+                int index = leftHandSide.indexOf(s);
+                String missingCharacter = rightHandSide.get(index);
+                long score = missingCharacterScore(missingCharacter);
+                finalScore = finalScore * 5 + score;
+
+            }
+            return finalScore;
+
         }
 
     }

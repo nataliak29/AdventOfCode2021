@@ -16,7 +16,7 @@ public class Day10Test extends TestCase {
 
     public void testPartTwoAnswer() throws FileNotFoundException {
         String actualAnswer = day10.partTwoAnswer(RESOURCE);
-        String expectedAnswer = "-1";
+        String expectedAnswer = "288957";
         assertEquals(expectedAnswer, actualAnswer);
     }
 
@@ -44,6 +44,30 @@ public class Day10Test extends TestCase {
         assertEquals(expectedString, actualString);
     }
 
+    public void testGetLineToAutoComplete() {
+        String line = "[({(<(())[]>[[{[]{<()<>>";
+        Day10.NavigationSubsystemLine navigationSubsystemLine = new Day10.NavigationSubsystemLine(line);
+        String actualString = navigationSubsystemLine.getLineToAutoComplete();
+        String expectedString ="[({([[{{";
+        assertEquals(expectedString, actualString);
+    }
+
+    public void testGetLineToAutoComplete2() {
+        String line = "[[<[([]))<([[{}[[()]]]";
+        Day10.NavigationSubsystemLine navigationSubsystemLine = new Day10.NavigationSubsystemLine(line);
+        String actualString = navigationSubsystemLine.getLineToAutoComplete();
+        String expectedString ="";
+        assertEquals(expectedString, actualString);
+    }
+
+    public void testFindCorruptedCharacterCase4() {
+        String line = "[({(<(())[]>[[{[]{<()<>>";
+        Day10.NavigationSubsystemLine navigationSubsystemLine = new Day10.NavigationSubsystemLine(line);
+        String actualString = navigationSubsystemLine.getCorruptedCharacter();
+        String expectedString = null;
+        assertEquals(expectedString, actualString);
+    }
+
     public void testGetPoints() {
         String line = "[[<[([]))<([[{}[[()]]]";
         Day10.NavigationSubsystemLine navigationSubsystemLine = new Day10.NavigationSubsystemLine(line);
@@ -61,6 +85,27 @@ public class Day10Test extends TestCase {
         Integer expectedPoints = 26397;
         assertEquals( expectedPoints, totalPoints);
     }
+
+    public void testAutoCompleteScore(){
+        String input = "[({([[{{";
+        Day10.NavigationSubsystemLine navigationSubsystemLine = new Day10.NavigationSubsystemLine(input);
+        Long expectedScore = Long.valueOf(288957);
+        Long actualScore = navigationSubsystemLine.autoCompleteScore(input);
+        assertEquals( expectedScore, actualScore);
+    }
+
+
+    public void testPointsFromMissingCharacters() {
+        ArrayList<String> inputArrayString = new ArrayList<String>(
+                Arrays.asList("[({(<(())[]>[[{[]{<()<>>", "[(()[<>])]({[<{<<[]>>(",
+                        "(((({<>}<{<{<>}{[]{[]{}", "{<[[]]>}<{[{[{[]{()[[[]","<{([{{}}[<[[[<>{}]]]>[]]"));
+        ArrayList<Long> actualArray = day10.pointsFromMissingCharacters(inputArrayString);
+        ArrayList<Long> expectedArray = new ArrayList<Long>(
+                Arrays.asList(Long.valueOf(288957), Long.valueOf(5566), Long.valueOf(1480781),
+                        Long.valueOf(995444), Long.valueOf(294)));
+        assertTrue(Arrays.deepEquals(new ArrayList[]{expectedArray}, new ArrayList[]{actualArray}));
+    }
+
 
 
 }
