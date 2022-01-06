@@ -14,6 +14,12 @@ public class Day14Test extends TestCase {
         assertEquals(expectedAnswer, actualAnswer);
     }
 
+    public void testPartTwoAnswer() throws FileNotFoundException {
+        String actualAnswer = day14.partTwoAnswer(RESOURCE);
+        String expectedAnswer = "2188189693529";
+        assertEquals(expectedAnswer, actualAnswer);
+    }
+
     public void testLoopOverPairs(){
         HashMap <String,String> instructions = new HashMap<>();
         instructions.put("NN","C");

@@ -10,7 +10,7 @@ public class Day14 extends Day  {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        //System.out.println("Part1: " + new Day14().partOneAnswer(RESOURCE));
+        System.out.println("Part1: " + new Day14().partOneAnswer(RESOURCE));
         System.out.println("Part2: " + new Day14().partTwoAnswer(RESOURCE));
     }
 
@@ -32,14 +32,17 @@ public class Day14 extends Day  {
     public String partTwoAnswer(String resource) {
         ArrayList<String> inputArray = getResourceAsStringArray(resource);
         HashMap<String,String> instructions = getInstructionsHashMap(inputArray);
-        int numberOfSteps = 30;
+        int numberOfSteps = 40;
         String polymer = inputArray.get(0);
+        char lastLetterInPolymer = polymer.charAt(polymer.length()-1);
+        HashMap<String,Long> polymerPairs = initialSetUp(polymer);
         for (int i = 0; i < numberOfSteps; i++){
-            System.out.println("step "+ i);
-            polymer = processStep(polymer, instructions);
-
+            System.out.println("Step "+ i);
+            polymerPairs = processStepEfficient( polymerPairs, instructions);
         }
-        HashMap<Character,Long> frequencies = getFrequencyOfElements(polymer);
+
+        HashMap<Character,Long> frequencies = getFrequencyOfElementsEfficient(polymerPairs);
+        frequencies.put(lastLetterInPolymer,frequencies.get(lastLetterInPolymer) + 1);
         long answer = differenceBetweenFrequencies(frequencies);
         return String.valueOf(answer);
     }
@@ -52,11 +55,50 @@ public class Day14 extends Day  {
             String toInsert = instructions.get(pair);
             stringBuffer.append(firstLetter);
             stringBuffer.append(toInsert);
-
         }
         String lastLetter = polymer.substring(polymer.length() -1, polymer.length());
         stringBuffer.append(lastLetter);
         return stringBuffer.toString();
+    }
+
+    public HashMap<String,Long> initialSetUp(String polymer) {
+        HashMap<String, Long> polymerPairs = new HashMap<>();
+        for (int i = 0; i < polymer.length() - 1; i++) {
+            String pair = polymer.substring(i, i + 2);
+            polymerPairs = addToMap(pair, Long.valueOf(1), polymerPairs);
+        }
+        return polymerPairs;
+    }
+
+    public HashMap<String,Long> addToMap(String toBeAdded, Long value, HashMap<String,Long> map){
+        if (map.containsKey(toBeAdded)){
+            long newValue = map.get(toBeAdded) + value;
+            map.put(toBeAdded, newValue);
+        }
+        else {
+            map.put(toBeAdded, value);
+        }
+        return map;
+    }
+
+    public HashMap<String,Long> processStepEfficient(HashMap<String,Long> polymerPairs, HashMap<String,String> instructions){
+        HashMap<String,Long> polymerPairsToAdd = new HashMap<>();
+        for (String pair : polymerPairs.keySet()){
+            StringBuffer firstPair = new StringBuffer();
+            StringBuffer secondPair = new StringBuffer();
+            String firstLetter = pair.substring(0,1);
+            String secondLetter = pair.substring(1,2);
+            String letterToInsert = instructions.get(pair);
+            firstPair.append(firstLetter);
+            firstPair.append(letterToInsert);
+            secondPair.append(letterToInsert);
+            secondPair.append(secondLetter);
+            Long value = polymerPairs.get(pair);
+            polymerPairsToAdd = addToMap(firstPair.toString(), value, polymerPairsToAdd);
+            polymerPairsToAdd = addToMap(secondPair.toString(), value, polymerPairsToAdd);
+        }
+
+        return polymerPairsToAdd;
     }
 
     public long differenceBetweenFrequencies(HashMap<Character,Long> frequencies){
@@ -88,6 +130,21 @@ public class Day14 extends Day  {
             }
             else {
                 frequencies.put(c, Long.valueOf(1));
+            }
+        }
+        return frequencies;
+    }
+
+    public HashMap<Character,Long> getFrequencyOfElementsEfficient(HashMap<String,Long> polymerPairs) {
+        HashMap<Character,Long> frequencies = new HashMap<Character, Long>();
+        for (String pair: polymerPairs.keySet()) {
+            char c = pair.charAt(0);
+            Long freq = frequencies.get(c);
+            if (freq != null) {
+                frequencies.put(c, new Long(freq + polymerPairs.get(pair)));
+            }
+            else {
+                frequencies.put(c, Long.valueOf(polymerPairs.get(pair)));
             }
         }
         return frequencies;
