@@ -1,5 +1,14 @@
+import javafx.util.Pair;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+
 public class Grid {
     int[][] grid;
+    HashMap<Pair<Integer, Integer>, Integer> distanceMap = new HashMap<>();
+
 
     public Grid(int[][] grid) {
         this.grid = grid;
@@ -71,13 +80,13 @@ public class Grid {
             return false;
         }
 
-        if (getTotalColumn() != other.getTotalColumn()){
+        if (getTotalColumn() != other.getTotalColumn()) {
             return false;
         }
 
         for (int i = 0; i < getTotalRows(); i++) {
             for (int j = 0; j < getTotalColumn(); j++) {
-                if (grid[i][j] != other.getValue(i,j)){
+                if (grid[i][j] != other.getValue(i, j)) {
                     return false;
                 }
 
@@ -87,5 +96,86 @@ public class Grid {
 
     }
 
+    public void setUpDistanceMap() {
+        for (int i = 0; i < getTotalRows(); i++) {
+            for (int j = 0; j < getTotalColumn(); j++) {
+                Pair coordinates = new Pair<>(i, j);
+                if (i == 0 && j == 0) {
+                    distanceMap.put(coordinates, 0);
+                } else {
+                    distanceMap.put(coordinates, Integer.MAX_VALUE);
+                }
+            }
+        }
+    }
 
+    public Map<Pair<Integer, Integer>, Integer> getAdjacentNodes(Pair<Integer, Integer> start) {
+        int dRow[] = {0, 1, 0, -1};
+        int dCol[] = {-1, 0, 1, 0};
+        int nodeRow = start.getKey();
+        int nodeCol = start.getValue();
+        Map<Pair<Integer, Integer>, Integer> adjacentNodesMap = new HashMap<Pair<Integer, Integer>, Integer>();
+
+        for (int i = 0; i < 4; i++) {
+            int adjRow = nodeRow + dRow[i];
+            int adjCol = nodeCol + dCol[i];
+
+            if (adjRow < getTotalRows() && adjCol < getTotalColumn()
+                    && adjCol >= 0 && adjRow >= 0) {
+                Pair adjacentNode = new Pair(adjRow, adjCol);
+                int adjacentNodeRisk = getValue(adjRow, adjCol);
+                adjacentNodesMap.put(adjacentNode, adjacentNodeRisk);
+            }
+
+        }
+        return adjacentNodesMap;
+
+    }
+
+    public Pair<Integer, Integer> findMinimumDistance(Map<Pair<Integer, Integer>, Integer> distances) {
+        int minDistance = Integer.MAX_VALUE;
+        Pair minPair = new Pair(0, 0);
+        for (Pair pair : distances.keySet()) {
+            if (distances.get(pair) < minDistance) {
+                minDistance = distances.get(pair);
+                minPair = pair;
+            }
+        }
+        return minPair;
+    }
+
+
+    public void dijkstra(Pair<Integer, Integer> start) {
+        int numberOfItems = getTotalColumn() * getTotalRows();
+        Map<Pair<Integer, Integer>, Integer> settledNodes = new HashMap<>();
+        Map<Pair<Integer, Integer>, Integer> unsettledNodes = new HashMap<>();
+        setUpDistanceMap();
+        unsettledNodes.put(start, 0);
+
+
+        while (settledNodes.size() != numberOfItems) {
+            Pair<Integer, Integer> minPair = findMinimumDistance(unsettledNodes);
+            int value = unsettledNodes.get(minPair);
+            unsettledNodes.remove(minPair);
+            settledNodes.put(minPair,value);
+            Map<Pair<Integer, Integer>, Integer> adjacentNodesMap = getAdjacentNodes(minPair);
+            for (Map.Entry<Pair<Integer, Integer>, Integer> entry : adjacentNodesMap.entrySet()) {
+                Pair<Integer, Integer> entryKey = entry.getKey();
+
+                if (!settledNodes.containsKey(entry.getKey())) {
+                    int edgeDistanceFromGrid = getValue(entryKey.getKey(), entryKey.getValue());
+                    int newDistance = distanceMap.get(minPair) + edgeDistanceFromGrid;
+                    if (newDistance < distanceMap.get(entryKey) )
+                        distanceMap.put(entryKey, newDistance);
+                    unsettledNodes.put(entryKey, distanceMap.get(entryKey));
+                }
+            }
+
+        }
+    }
+
+    public HashMap<Pair<Integer, Integer>, Integer> getDistanceMap() {
+        return distanceMap;
+    }
 }
+

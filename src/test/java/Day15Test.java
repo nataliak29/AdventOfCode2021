@@ -3,8 +3,6 @@ import junit.framework.TestCase;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Day15Test extends TestCase {
     Day15 day15 = new Day15();
@@ -20,7 +18,6 @@ public class Day15Test extends TestCase {
         long start2 = System.currentTimeMillis();
         String actualAnswer = day15.partTwoAnswer(RESOURCE);
         long end2 = System.currentTimeMillis();
-        System.out.println("Elapsed Time in milli seconds: "+ (end2-start2));
         String expectedAnswer = "315";
         assertEquals(expectedAnswer, actualAnswer);
     }
@@ -82,28 +79,6 @@ public class Day15Test extends TestCase {
         assertEquals(expectedGrid,actualGrid);
     }
 
-    public void testCreateRisksGraph() {
-        Grid grid = new Grid(new int[][]{{1,2,3},{4,5,6}});
-        Graph actualGraph = day15.createRisksGraph(grid);
-        System.out.println(actualGraph);
 
-    }
 
-    public void testGetAdjacentNode() {
-        Grid grid = new Grid(new int[][]{{1,2,3},{4,5,6}});
-        Node targetNode = new Node(0, 0);
-        Map<Node, Integer> actualMap = day15.getAdjacentNode(targetNode, grid);
-        Map<Node, Integer> expectedMap = new HashMap<Node, Integer>();
-        expectedMap.put(new Node(1, 0),4);
-        expectedMap.put(new Node(0, 1),2);
-        for (Node n : actualMap.keySet()){
-            System.out.println(n);
-            if (expectedMap.containsKey(n)){
-                System.out.println("a");
-            }
-            if (expectedMap.containsKey(n) && actualMap.get(n) == expectedMap.get(n)){
-                System.out.println(true);
-            }
-        }
-    }
 }
