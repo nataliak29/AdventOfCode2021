@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Node {
+public class Node implements Comparable<Node>{
 
     private List<Node> lowestRiskPath = new LinkedList<>();
     private Integer risk = Integer.MAX_VALUE;
@@ -68,4 +68,11 @@ public class Node {
         return stringBuffer.toString();
     }
 
+    @Override
+    public int compareTo(Node o) {
+        if (risk > o.getRisk()){
+            return  1;
+        }
+        return 0;
+    }
 }
