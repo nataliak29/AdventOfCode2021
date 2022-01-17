@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 public class Packet {
     String binaryInput;
@@ -156,7 +157,9 @@ public class Packet {
 
     }
 
-    public Integer parseOperation(String binaryString, Integer previousTypeID,
+    //Stack<String> stackOfCards = new Stack<>();
+
+    public Integer parseOperation(String binaryString, Stack<Integer> operationTypeStack,
                                   List<Integer> values, Integer finalResult){
         Packet packet  = new Packet(binaryString);
         typeID = packet.getTypeID();
@@ -165,18 +168,27 @@ public class Packet {
             values.add(value);
         }
         else {
-            previousTypeID = typeID;
+            operationTypeStack.add(typeID);
         }
+
+        //Integer lastTypeId = operationTypeStack.pop();
+
+       /** if( typeID != 4 && lastTypeId==4){
+            System.out.println("SWITCH");
+            System.out.println("type id "+typeID+" prev type id "+lastTypeId);
+        }
+        **/
 
         String subPacketsString = packet.getSubPacketsBinaryString();
         if (subPacketsString == null){
-            finalResult += performOperation(previousTypeID,values);
+            Integer lastTypeId = operationTypeStack.pop();
+            finalResult += performOperation(lastTypeId,values);
             packetOperationResult = finalResult;
             return finalResult;
         }
 
         else {
-            parseOperation(subPacketsString, previousTypeID,values,finalResult);
+            parseOperation(subPacketsString,operationTypeStack,values,finalResult);
         }
         return finalResult;
 

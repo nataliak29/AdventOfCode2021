@@ -3,6 +3,7 @@ import junit.framework.TestCase;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Day16Test extends TestCase {
     Day16 day16 = new Day16();
@@ -139,7 +140,8 @@ public class Day16Test extends TestCase {
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
         List<Integer> values = new ArrayList<Integer>();
-        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Stack<Integer> operationTypeStack = new Stack<>();
+        packet.parseOperation(input,operationTypeStack,values,0);
         Integer actualResult = packet.packetOperationResult;
         assertEquals(java.util.Optional.of(3), java.util.Optional.of(actualResult));
     }
@@ -149,7 +151,8 @@ public class Day16Test extends TestCase {
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
         List<Integer> values = new ArrayList<Integer>();
-        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Stack<Integer> operationTypeStack = new Stack<>();
+        packet.parseOperation(input,operationTypeStack,values,0);
         Integer actualResult = packet.packetOperationResult;
         assertEquals(java.util.Optional.of(54), java.util.Optional.of(actualResult));
     }
@@ -159,7 +162,8 @@ public class Day16Test extends TestCase {
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
         List<Integer> values = new ArrayList<Integer>();
-        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Stack<Integer> operationTypeStack = new Stack<>();
+        packet.parseOperation(input,operationTypeStack,values,0);
         Integer actualResult = packet.packetOperationResult;
         assertEquals(java.util.Optional.of(7), java.util.Optional.of(actualResult));
     }
@@ -169,7 +173,8 @@ public class Day16Test extends TestCase {
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
         List<Integer> values = new ArrayList<Integer>();
-        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Stack<Integer> operationTypeStack = new Stack<>();
+        packet.parseOperation(input,operationTypeStack,values,0);
         Integer actualResult = packet.packetOperationResult;
         assertEquals(java.util.Optional.of(9), java.util.Optional.of(actualResult));
     }
@@ -179,7 +184,8 @@ public class Day16Test extends TestCase {
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
         List<Integer> values = new ArrayList<Integer>();
-        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Stack<Integer> operationTypeStack = new Stack<>();
+        packet.parseOperation(input,operationTypeStack,values,0);
         Integer actualResult = packet.packetOperationResult;
         assertEquals(java.util.Optional.of(1), java.util.Optional.of(actualResult));
     }
@@ -189,7 +195,8 @@ public class Day16Test extends TestCase {
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
         List<Integer> values = new ArrayList<Integer>();
-        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Stack<Integer> operationTypeStack = new Stack<>();
+        packet.parseOperation(input,operationTypeStack,values,0);
         Integer actualResult = packet.packetOperationResult;
         assertEquals(java.util.Optional.of(0), java.util.Optional.of(actualResult));
     }
@@ -199,7 +206,8 @@ public class Day16Test extends TestCase {
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
         List<Integer> values = new ArrayList<Integer>();
-        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Stack<Integer> operationTypeStack = new Stack<>();
+        packet.parseOperation(input,operationTypeStack,values,0);
         Integer actualResult = packet.packetOperationResult;
         assertEquals(java.util.Optional.of(0), java.util.Optional.of(actualResult));
     }
@@ -209,9 +217,10 @@ public class Day16Test extends TestCase {
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
         List<Integer> values = new ArrayList<Integer>();
-        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Stack<Integer> operationTypeStack = new Stack<>();
+        packet.parseOperation(input,operationTypeStack,values,0);
         Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(1), java.util.Optional.of(actualResult));
+        assertEquals(java.util.Optional.of(0), java.util.Optional.of(actualResult));
     }
 
     public void testGetPacketInfo() {
@@ -228,7 +237,8 @@ public class Day16Test extends TestCase {
         //int actualVersionSum = packet.packetVersionSum;
         //assertEquals(31,actualVersionSum);
         List<Integer> values = new ArrayList<Integer>();
-        System.out.println(packet.parseOperation(input,packet.getTypeID(),values,0));
+        Stack<Integer> operationTypeStack = new Stack<>();
+        System.out.println(packet.parseOperation(input,operationTypeStack,values,0));
         System.out.println("answer "+packet.packetOperationResult);
     }
 
