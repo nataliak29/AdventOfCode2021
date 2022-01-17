@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Packet {
     String binaryInput;
@@ -7,6 +9,7 @@ public class Packet {
     Integer endOfPacket;
     String binaryString;
     Integer packetVersionSum;
+    Integer packetOperationResult;
 
     public Packet(String binaryInput){
         this.binaryInput = binaryInput;
@@ -73,12 +76,13 @@ public class Packet {
         }
     }
 
-    public Integer getLiteralValue(){
+    public Integer getLiteralValueType4(){
         StringBuffer literalValueString = new StringBuffer();
         System.out.println(binaryString);
         for (int i = 0; i < binaryString.length(); i+=5){
-            literalValueString.append(binaryString.substring(i+1,i+5));
             System.out.println(binaryString.substring(i+1,i+5));
+            literalValueString.append(binaryString.substring(i+1,i+5));
+            //System.out.println(binaryString.substring(i+1,i+5));
             if (binaryString.substring(i,i+1).equals("0")){
                 endOfPacket = i+5;
                 break;
@@ -86,6 +90,96 @@ public class Packet {
         }
         Integer literalValue = Integer.parseInt(literalValueString.toString(),2);
         return  literalValue;
+    }
+
+    /**
+    public Integer performOperations(HashMap<Integer, ArrayList<Integer>> values){
+        Integer
+        for (Integer key: values.keySet()){
+
+        }
+    }
+**/
+    public Integer performOperation(Integer typeID, List<Integer> values){
+        Integer result = 0;
+        if (typeID == 0){
+            result = 0;
+            for (int value:values){
+                result = result + value;
+            }
+        }
+        if (typeID == 1){
+            result = 1;
+            for (int value:values){
+                result = result * value;
+            }
+        }
+        if (typeID == 2){
+            result = Integer.MAX_VALUE;
+            for (int value:values){
+                if (value < result){
+                    result = value;
+                }
+            }
+        }
+        if (typeID == 3){
+            result = 0;
+            for (int value:values){
+                if (value > result){
+                    result = value;
+                }
+            }
+        }
+
+        if (typeID == 5){
+            result = 0;
+            if (values.get(0) > values.get(1)){
+                result = 1;
+            }
+        }
+
+        if (typeID == 6){
+            result = 0;
+            if (values.get(0) < values.get(1)){
+                result = 1;
+            }
+        }
+
+        if (typeID == 7){
+            result = 0;
+            if (values.get(0) == values.get(1)){
+                result = 1;
+            }
+        }
+
+        return result;
+
+    }
+
+    public Integer parseOperation(String binaryString, Integer previousTypeID,
+                                  List<Integer> values, Integer finalResult){
+        Packet packet  = new Packet(binaryString);
+        typeID = packet.getTypeID();
+        if (typeID == 4){
+            Integer value = packet.getLiteralValueType4();
+            values.add(value);
+        }
+        else {
+            previousTypeID = typeID;
+        }
+
+        String subPacketsString = packet.getSubPacketsBinaryString();
+        if (subPacketsString == null){
+            finalResult += performOperation(previousTypeID,values);
+            packetOperationResult = finalResult;
+            return finalResult;
+        }
+
+        else {
+            parseOperation(subPacketsString, previousTypeID,values,finalResult);
+        }
+        return finalResult;
+
     }
 
 

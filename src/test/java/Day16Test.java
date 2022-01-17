@@ -1,6 +1,8 @@
 import junit.framework.TestCase;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Day16Test extends TestCase {
     Day16 day16 = new Day16();
@@ -43,10 +45,11 @@ public class Day16Test extends TestCase {
 
     public void testGetLiteralValue() {
         String input = "110100101111111000101000";
-        int actualTypeID = new Packet(input).getLiteralValue();
+        int actualTypeID = new Packet(input).getLiteralValueType4();
         int expectedTypeID = 2021;
         assertEquals(expectedTypeID,actualTypeID);
     }
+
 
     public void testGetLengthTypeID() {
         String input = "00111000000000000110111101000101001010010001001000000000";
@@ -131,19 +134,102 @@ public class Day16Test extends TestCase {
         assertEquals(31,actualVersionSum);
     }
 
+    public void testParseOperationType0() {
+        String inputHex ="C200B40A82";
+        String input = day16.convertToBinary(inputHex);
+        Packet packet = new Packet(input);
+        List<Integer> values = new ArrayList<Integer>();
+        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Integer actualResult = packet.packetOperationResult;
+        assertEquals(java.util.Optional.of(3), java.util.Optional.of(actualResult));
+    }
+
+    public void testParseOperationType1() {
+        String inputHex ="04005AC33890";
+        String input = day16.convertToBinary(inputHex);
+        Packet packet = new Packet(input);
+        List<Integer> values = new ArrayList<Integer>();
+        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Integer actualResult = packet.packetOperationResult;
+        assertEquals(java.util.Optional.of(54), java.util.Optional.of(actualResult));
+    }
+
+    public void testParseOperationType2() {
+        String inputHex ="880086C3E88112";
+        String input = day16.convertToBinary(inputHex);
+        Packet packet = new Packet(input);
+        List<Integer> values = new ArrayList<Integer>();
+        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Integer actualResult = packet.packetOperationResult;
+        assertEquals(java.util.Optional.of(7), java.util.Optional.of(actualResult));
+    }
+
+    public void testParseOperationType3() {
+        String inputHex ="CE00C43D881120";
+        String input = day16.convertToBinary(inputHex);
+        Packet packet = new Packet(input);
+        List<Integer> values = new ArrayList<Integer>();
+        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Integer actualResult = packet.packetOperationResult;
+        assertEquals(java.util.Optional.of(9), java.util.Optional.of(actualResult));
+    }
+
+    public void testParseOperationType5() {
+        String inputHex ="D8005AC2A8F0";
+        String input = day16.convertToBinary(inputHex);
+        Packet packet = new Packet(input);
+        List<Integer> values = new ArrayList<Integer>();
+        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Integer actualResult = packet.packetOperationResult;
+        assertEquals(java.util.Optional.of(1), java.util.Optional.of(actualResult));
+    }
+
+    public void testParseOperationType6() {
+        String inputHex ="F600BC2D8F";
+        String input = day16.convertToBinary(inputHex);
+        Packet packet = new Packet(input);
+        List<Integer> values = new ArrayList<Integer>();
+        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Integer actualResult = packet.packetOperationResult;
+        assertEquals(java.util.Optional.of(0), java.util.Optional.of(actualResult));
+    }
+
+    public void testParseOperationType7() {
+        String inputHex ="9C005AC2F8F0";
+        String input = day16.convertToBinary(inputHex);
+        Packet packet = new Packet(input);
+        List<Integer> values = new ArrayList<Integer>();
+        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Integer actualResult = packet.packetOperationResult;
+        assertEquals(java.util.Optional.of(0), java.util.Optional.of(actualResult));
+    }
+
+    public void testParseOperationCombination() {
+        String inputHex ="9C0141080250320F1802104A08";
+        String input = day16.convertToBinary(inputHex);
+        Packet packet = new Packet(input);
+        List<Integer> values = new ArrayList<Integer>();
+        packet.parseOperation(input,packet.getTypeID(),values,0);
+        Integer actualResult = packet.packetOperationResult;
+        assertEquals(java.util.Optional.of(1), java.util.Optional.of(actualResult));
+    }
+
     public void testGetPacketInfo() {
-        String inputHex ="38006F45291200";
+        String inputHex ="C200B40A82";
         String input = day16.convertToBinary(inputHex);
         System.out.println(input);
         Packet packet = new Packet(input);
-        System.out.println(packet.getVersion());
-        System.out.println(packet.getTypeID());
-        System.out.println(packet.getLengthTypeID());
-        System.out.println(packet.getNumberOfSubPackets());
-        System.out.println(packet.getSubPacketsBinaryString());
-        System.out.println(packet.getLiteralValue());
+        System.out.println("version "+packet.getVersion());
+        System.out.println("typeID " +packet.getTypeID());
+        System.out.println("lengthTypeID "+packet.getLengthTypeID());
+        System.out.println("numberOfSubPackets "+packet.getNumberOfSubPackets());
+        //System.out.println("subpacketBinaryString "+packet.getSubPacketsBinaryString());
+        //System.out.println("literalValue "+packet.getLiteralValueType4());
         //int actualVersionSum = packet.packetVersionSum;
         //assertEquals(31,actualVersionSum);
+        List<Integer> values = new ArrayList<Integer>();
+        System.out.println(packet.parseOperation(input,packet.getTypeID(),values,0));
+        System.out.println("answer "+packet.packetOperationResult);
     }
 
 
