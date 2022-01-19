@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class Day16 extends Day{
     static String RESOURCE = "src/main/resources/day16_input.txt";
@@ -10,7 +11,7 @@ public class Day16 extends Day{
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        System.out.println("Part1: " + new Day16().partOneAnswer(RESOURCE));
+        //System.out.println("Part1: " + new Day16().partOneAnswer(RESOURCE));
         System.out.println("Part2: " + new Day16().partTwoAnswer(RESOURCE));
     }
 
@@ -19,16 +20,31 @@ public class Day16 extends Day{
         ArrayList<String> inputArray = getResourceAsStringArray(resource);
         String input = convertToBinary(inputArray.get(0));
         Packet packet = new Packet(input);
-        packet.getVersionSumInPacket(input,0);
-        int answer = packet.packetVersionSum;
+        int answer = packet.getVersionSumInPacket(input,0);
         return String.valueOf(answer);
     }
 
     @Override
     public String partTwoAnswer(String resource) throws FileNotFoundException {
         ArrayList<String> inputArray = getResourceAsStringArray(resource);
-        int answer = -1;
-        return String.valueOf(answer);
+        String input = convertToBinary(inputArray.get(0));
+        Packet packet = new Packet(input);
+        Stack<Integer> stackOfOperationTypeIDs = new Stack<>();
+        Stack<Long> literalValues = new Stack<>();
+        packet.parseOperation(input, stackOfOperationTypeIDs, literalValues);
+        stackOfOperationTypeIDs = packet.getOperationTypeStack();
+        literalValues = packet.getLiteralValues();
+        for (long l: literalValues){
+          // if (l == 0) System.out.println(l);
+        }
+
+        for (int l: stackOfOperationTypeIDs){
+            //System.out.println(l);
+        }
+
+        //Long answer = packet.runOperations(stackOfOperationTypeIDs, literalValues);
+        //return String.valueOf(answer);
+        return "";
     }
 
 

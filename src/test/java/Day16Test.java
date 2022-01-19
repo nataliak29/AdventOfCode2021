@@ -2,6 +2,7 @@ import junit.framework.TestCase;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -12,12 +13,6 @@ public class Day16Test extends TestCase {
     public void testPartOneAnswer() throws FileNotFoundException {
         String actualAnswer = day16.partOneAnswer(RESOURCE);
         String expectedAnswer = "31";
-        assertEquals(expectedAnswer, actualAnswer);
-    }
-
-    public void testPartTwoAnswer() throws FileNotFoundException {
-        String actualAnswer = day16.partTwoAnswer(RESOURCE);
-        String expectedAnswer = "-1";
         assertEquals(expectedAnswer, actualAnswer);
     }
 
@@ -46,11 +41,10 @@ public class Day16Test extends TestCase {
 
     public void testGetLiteralValue() {
         String input = "110100101111111000101000";
-        int actualTypeID = new Packet(input).getLiteralValueType4();
-        int expectedTypeID = 2021;
+        Long actualTypeID = new Packet(input).getLiteralValueType4();
+        Long expectedTypeID = Long.valueOf(2021);
         assertEquals(expectedTypeID,actualTypeID);
     }
-
 
     public void testGetLengthTypeID() {
         String input = "00111000000000000110111101000101001010010001001000000000";
@@ -103,8 +97,7 @@ public class Day16Test extends TestCase {
         String inputHex ="620080001611562C8802118E34";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        packet.getVersionSumInPacket(input,0);
-        int actualVersionSum = packet.packetVersionSum;
+        int actualVersionSum = packet.getVersionSumInPacket(input,0);
         assertEquals(12,actualVersionSum);
     }
 
@@ -112,8 +105,7 @@ public class Day16Test extends TestCase {
         String inputHex ="8A004A801A8002F478";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        packet.getVersionSumInPacket(input,0);
-        int actualVersionSum = packet.packetVersionSum;
+        int actualVersionSum = packet.getVersionSumInPacket(input,0);
         assertEquals(16,actualVersionSum);
     }
 
@@ -121,8 +113,7 @@ public class Day16Test extends TestCase {
         String inputHex ="C0015000016115A2E0802F182340";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        packet.getVersionSumInPacket(input,0);
-        int actualVersionSum = packet.packetVersionSum;
+        int actualVersionSum = packet.getVersionSumInPacket(input,0);
         assertEquals(23,actualVersionSum);
     }
 
@@ -130,8 +121,7 @@ public class Day16Test extends TestCase {
         String inputHex ="A0016C880162017C3686B18A3D4780";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        packet.getVersionSumInPacket(input,0);
-        int actualVersionSum = packet.packetVersionSum;
+        int actualVersionSum = packet.getVersionSumInPacket(input,0);
         assertEquals(31,actualVersionSum);
     }
 
@@ -139,107 +129,161 @@ public class Day16Test extends TestCase {
         String inputHex ="C200B40A82";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        packet.parseOperation(input,operationTypeStack,values,0);
-        Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(3), java.util.Optional.of(actualResult));
+        Stack<Integer> stackOfOperationTypeIDs = new Stack<>();
+        Stack<Long> literalValues = new Stack<>();
+        packet.parseOperation(input, stackOfOperationTypeIDs, literalValues);
+        stackOfOperationTypeIDs = packet.getOperationTypeStack();
+        literalValues = packet.getLiteralValues();
+        Long actualResult = packet.runOperations(stackOfOperationTypeIDs, literalValues);
+        assertEquals(Long.valueOf(3), actualResult);
     }
+
 
     public void testParseOperationType1() {
         String inputHex ="04005AC33890";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        packet.parseOperation(input,operationTypeStack,values,0);
-        Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(54), java.util.Optional.of(actualResult));
+        Stack<Integer> stackOfOperationTypeIDs = new Stack<>();
+        Stack<Long> literalValues = new Stack<>();
+        packet.parseOperation(input, stackOfOperationTypeIDs, literalValues);
+        stackOfOperationTypeIDs = packet.getOperationTypeStack();
+        literalValues = packet.getLiteralValues();
+        Long actualResult = packet.runOperations(stackOfOperationTypeIDs, literalValues);
+        assertEquals(Long.valueOf(54), actualResult);
     }
 
     public void testParseOperationType2() {
         String inputHex ="880086C3E88112";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        packet.parseOperation(input,operationTypeStack,values,0);
-        Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(7), java.util.Optional.of(actualResult));
+        Stack<Integer> stackOfOperationTypeIDs = new Stack<>();
+        Stack<Long> literalValues = new Stack<>();
+        packet.parseOperation(input, stackOfOperationTypeIDs, literalValues);
+        stackOfOperationTypeIDs = packet.getOperationTypeStack();
+        literalValues = packet.getLiteralValues();
+        Long actualResult = packet.runOperations(stackOfOperationTypeIDs, literalValues);
+        assertEquals(Long.valueOf(7), actualResult);
     }
 
     public void testParseOperationType3() {
         String inputHex ="CE00C43D881120";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        packet.parseOperation(input,operationTypeStack,values,0);
-        Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(9), java.util.Optional.of(actualResult));
+        Stack<Integer> stackOfOperationTypeIDs = new Stack<>();
+        Stack<Long> literalValues = new Stack<>();
+        packet.parseOperation(input, stackOfOperationTypeIDs, literalValues);
+        stackOfOperationTypeIDs = packet.getOperationTypeStack();
+        literalValues = packet.getLiteralValues();
+        Long actualResult = packet.runOperations(stackOfOperationTypeIDs, literalValues);
+        assertEquals(Long.valueOf(9), actualResult);
     }
 
     public void testParseOperationType5() {
         String inputHex ="D8005AC2A8F0";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        packet.parseOperation(input,operationTypeStack,values,0);
-        Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(1), java.util.Optional.of(actualResult));
+        Stack<Integer> stackOfOperationTypeIDs = new Stack<>();
+        Stack<Long> literalValues = new Stack<>();
+        packet.parseOperation(input, stackOfOperationTypeIDs, literalValues);
+        stackOfOperationTypeIDs = packet.getOperationTypeStack();
+        literalValues = packet.getLiteralValues();
+        Long actualResult = packet.runOperations(stackOfOperationTypeIDs, literalValues);
+        assertEquals(Long.valueOf(1), actualResult);
     }
 
     public void testParseOperationType6() {
         String inputHex ="F600BC2D8F";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        packet.parseOperation(input,operationTypeStack,values,0);
-        Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(0), java.util.Optional.of(actualResult));
+        Stack<Integer> stackOfOperationTypeIDs = new Stack<>();
+        Stack<Long> literalValues = new Stack<>();
+        packet.parseOperation(input, stackOfOperationTypeIDs, literalValues);
+        stackOfOperationTypeIDs = packet.getOperationTypeStack();
+        literalValues = packet.getLiteralValues();
+        Long actualResult = packet.runOperations(stackOfOperationTypeIDs, literalValues);
+        assertEquals(Long.valueOf(0), actualResult);
     }
 
     public void testParseOperationType7() {
         String inputHex ="9C005AC2F8F0";
         String input = day16.convertToBinary(inputHex);
         Packet packet = new Packet(input);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        packet.parseOperation(input,operationTypeStack,values,0);
-        Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(0), java.util.Optional.of(actualResult));
+        Stack<Integer> stackOfOperationTypeIDs = new Stack<>();
+        Stack<Long> literalValues = new Stack<>();
+        packet.parseOperation(input, stackOfOperationTypeIDs, literalValues);
+        stackOfOperationTypeIDs = packet.getOperationTypeStack();
+        literalValues = packet.getLiteralValues();
+        Long actualResult = packet.runOperations(stackOfOperationTypeIDs, literalValues);
+        assertEquals(Long.valueOf(0), actualResult);
     }
 
-    public void testParseOperationCombination() {
-        String inputHex ="9C0141080250320F1802104A08";
-        String input = day16.convertToBinary(inputHex);
+
+    public void testParseOperationVersion2() {
+        String input = "10011100000000010100000100001000000000100101000000110010000011110001100000000010000100000100101000001000";
         Packet packet = new Packet(input);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        packet.parseOperation(input,operationTypeStack,values,0);
-        Integer actualResult = packet.packetOperationResult;
-        assertEquals(java.util.Optional.of(0), java.util.Optional.of(actualResult));
+        Stack<Integer> stack = new Stack<>();
+        Stack<Long> values = new Stack<>();
+        packet.parseOperation(input, stack, values);
+        stack = packet.getOperationTypeStack();
+        values = packet.getLiteralValues();
+        Stack<Integer> stackExpected = new Stack<>();
+        stackExpected.push(7);
+        stackExpected.push(0);
+        stackExpected.push(4);
+        stackExpected.push(4);
+        stackExpected.push(1);
+        stackExpected.push(4);
+        stackExpected.push(4);
+        Stack<Long> valuesExpected = new Stack<>();
+        valuesExpected.push(Long.valueOf(1));
+        valuesExpected.push(Long.valueOf(3));
+        valuesExpected.push(Long.valueOf(2));
+        valuesExpected.push(Long.valueOf(2));
+        assertEquals(stackExpected, stack);
+        assertEquals(valuesExpected, values);
+
     }
 
-    public void testGetPacketInfo() {
+
+    public void testParseOperationV2Type0() {
+        Stack<Integer> stackExpected = new Stack<>();
+        stackExpected.push(0);
+        stackExpected.push(4);
+        stackExpected.push(4);
+        Stack<Long> valuesExpected = new Stack<>();
+        valuesExpected.push(Long.valueOf(1));
+        valuesExpected.push(Long.valueOf(2));
         String inputHex ="C200B40A82";
         String input = day16.convertToBinary(inputHex);
-        System.out.println(input);
         Packet packet = new Packet(input);
-        System.out.println("version "+packet.getVersion());
-        System.out.println("typeID " +packet.getTypeID());
-        System.out.println("lengthTypeID "+packet.getLengthTypeID());
-        System.out.println("numberOfSubPackets "+packet.getNumberOfSubPackets());
-        //System.out.println("subpacketBinaryString "+packet.getSubPacketsBinaryString());
-        //System.out.println("literalValue "+packet.getLiteralValueType4());
-        //int actualVersionSum = packet.packetVersionSum;
-        //assertEquals(31,actualVersionSum);
-        List<Integer> values = new ArrayList<Integer>();
-        Stack<Integer> operationTypeStack = new Stack<>();
-        System.out.println(packet.parseOperation(input,operationTypeStack,values,0));
-        System.out.println("answer "+packet.packetOperationResult);
+        Long actualResult = packet.runOperations(stackExpected,valuesExpected);
+        assertEquals(Long.valueOf(3), actualResult);
+
+    }
+    public void testParseOperationType0Combo() {
+        Stack<Integer> stackExpected = new Stack<>();
+        stackExpected.push(7);
+        stackExpected.push(0);
+        stackExpected.push(4);
+        stackExpected.push(4);
+        stackExpected.push(1);
+        stackExpected.push(4);
+        stackExpected.push(4);
+        Stack<Long> valuesExpected = new Stack<>();
+        valuesExpected.push(Long.valueOf(1));
+        valuesExpected.push(Long.valueOf(3));
+        valuesExpected.push(Long.valueOf(2));
+        valuesExpected.push(Long.valueOf(2));
+        String input = "10011100000000010100000100001000000000100101000000110010000011110001100000000010000100000100101000001000";
+        Packet packet = new Packet(input);
+        Long actualResult = packet.runOperations(stackExpected,valuesExpected);
+        assertEquals(Long.valueOf(1), actualResult);
+
+
+        //Integer actualResult = packet.packetOperationResult;
+       // System.out.println(actualResult);
+        //assertEquals(java.util.Optional.of(1), java.util.Optional.of(answer));
+
     }
 
 

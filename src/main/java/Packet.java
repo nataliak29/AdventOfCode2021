@@ -11,6 +11,8 @@ public class Packet {
     String binaryString;
     Integer packetVersionSum;
     Integer packetOperationResult;
+    Stack<Long> literalValues;
+    Stack<Integer> operationTypeStack;
 
     public Packet(String binaryInput){
         this.binaryInput = binaryInput;
@@ -77,11 +79,10 @@ public class Packet {
         }
     }
 
-    public Integer getLiteralValueType4(){
+    public Long getLiteralValueType4(){
         StringBuffer literalValueString = new StringBuffer();
-        System.out.println(binaryString);
         for (int i = 0; i < binaryString.length(); i+=5){
-            System.out.println(binaryString.substring(i+1,i+5));
+            //System.out.println(binaryString.substring(i+1,i+5));
             literalValueString.append(binaryString.substring(i+1,i+5));
             //System.out.println(binaryString.substring(i+1,i+5));
             if (binaryString.substring(i,i+1).equals("0")){
@@ -89,43 +90,36 @@ public class Packet {
                 break;
             }
         }
-        Integer literalValue = Integer.parseInt(literalValueString.toString(),2);
+        Long literalValue = Long.parseLong(literalValueString.toString(), 2);
         return  literalValue;
     }
 
-    /**
-    public Integer performOperations(HashMap<Integer, ArrayList<Integer>> values){
-        Integer
-        for (Integer key: values.keySet()){
 
-        }
-    }
-**/
-    public Integer performOperation(Integer typeID, List<Integer> values){
-        Integer result = 0;
+    public Long performOperation(Integer typeID, List<Long> values){
+        Long result = Long.valueOf(0);
         if (typeID == 0){
-            result = 0;
-            for (int value:values){
+            result = Long.valueOf(0);
+            for (long value:values){
                 result = result + value;
             }
         }
         if (typeID == 1){
-            result = 1;
-            for (int value:values){
+            result = Long.valueOf(1);
+            for (long value:values){
                 result = result * value;
             }
         }
         if (typeID == 2){
-            result = Integer.MAX_VALUE;
-            for (int value:values){
+            result = Long.MAX_VALUE;
+            for (long value:values){
                 if (value < result){
                     result = value;
                 }
             }
         }
         if (typeID == 3){
-            result = 0;
-            for (int value:values){
+            result = Long.valueOf(0);
+            for (long value:values){
                 if (value > result){
                     result = value;
                 }
@@ -133,23 +127,27 @@ public class Packet {
         }
 
         if (typeID == 5){
-            result = 0;
-            if (values.get(0) > values.get(1)){
-                result = 1;
+            result = Long.valueOf(0);
+            System.out.println("typeID 5 values");
+            for (Long l: values){
+                System.out.println(l);
+            }
+            if (values.get(0) < values.get(1)){
+                result = Long.valueOf(1);
             }
         }
 
         if (typeID == 6){
-            result = 0;
-            if (values.get(0) < values.get(1)){
-                result = 1;
+            result = Long.valueOf(0);
+            if (values.get(0) > values.get(1)){
+                result = Long.valueOf(1);
             }
         }
 
         if (typeID == 7){
-            result = 0;
-            if (values.get(0) == values.get(1)){
-                result = 1;
+            result = Long.valueOf(0);
+            if (values.get(0).equals(values.get(1))){
+                result = Long.valueOf(1);
             }
         }
 
@@ -157,59 +155,131 @@ public class Packet {
 
     }
 
-    //Stack<String> stackOfCards = new Stack<>();
 
-    public Integer parseOperation(String binaryString, Stack<Integer> operationTypeStack,
-                                  List<Integer> values, Integer finalResult){
+    public Integer getVersionSumInPacket(String binaryString, int versionSum){
+        if (binaryString == null){
+            return versionSum;
+        }
+        Packet packet  = new Packet(binaryString);
+        String subPacketsString = packet.getSubPacketsBinaryString();
+        return getVersionSumInPacket(subPacketsString,  versionSum + packet.getVersion());
+    }
+
+
+    public Integer parseOperationNew(String binaryString,
+                                  Stack<Integer> operationTypeStack,
+                                  Stack<Long> literalValues){
         Packet packet  = new Packet(binaryString);
         typeID = packet.getTypeID();
         if (typeID == 4){
-            Integer value = packet.getLiteralValueType4();
-            values.add(value);
+            //System.out.println(binaryString.length());
+            Long value = packet.getLiteralValueType4();
+            //System.out.println(value);
+            literalValues.push(value);
+            operationTypeStack.push(typeID);
         }
         else {
-            operationTypeStack.add(typeID);
+            operationTypeStack.push(typeID);
         }
-
-        //Integer lastTypeId = operationTypeStack.pop();
-
-       /** if( typeID != 4 && lastTypeId==4){
-            System.out.println("SWITCH");
-            System.out.println("type id "+typeID+" prev type id "+lastTypeId);
-        }
-        **/
-
         String subPacketsString = packet.getSubPacketsBinaryString();
-        if (subPacketsString == null){
-            Integer lastTypeId = operationTypeStack.pop();
-            finalResult += performOperation(lastTypeId,values);
-            packetOperationResult = finalResult;
-            return finalResult;
+        if (typeID ==5){
+            System.out.println("start "+subPacketsString);
+        }
+
+        if (subPacketsString != null){
+            parseOperation(subPacketsString,operationTypeStack,literalValues);
         }
 
         else {
-            parseOperation(subPacketsString,operationTypeStack,values,finalResult);
+            return 0;
         }
-        return finalResult;
+        this.literalValues = literalValues;
+        this.operationTypeStack =operationTypeStack;
+        return 1;
 
     }
 
 
-    public Integer getVersionSumInPacket(String binaryString, int versionSum){
+    public Integer parseOperation(String binaryString,
+                                  Stack<Integer> operationTypeStack,
+                                  Stack<Long> literalValues){
         Packet packet  = new Packet(binaryString);
-        versionSum = versionSum + packet.getVersion();
-        String subPacketsString = packet.getSubPacketsBinaryString();
-        if (subPacketsString == null){
-            packetVersionSum = versionSum;
-            return versionSum;
+        typeID = packet.getTypeID();
+        if (typeID == 4){
+            //System.out.println(binaryString.length());
+            Long value = packet.getLiteralValueType4();
+            //System.out.println(value);
+            literalValues.push(value);
+            operationTypeStack.push(typeID);
         }
         else {
-            getVersionSumInPacket(subPacketsString,  versionSum);
+            operationTypeStack.push(typeID);
         }
-        return versionSum;
+        String subPacketsString = packet.getSubPacketsBinaryString();
+        if (typeID ==5){
+            System.out.println("start "+subPacketsString);
+        }
+
+        if (subPacketsString != null){
+            parseOperation(subPacketsString,operationTypeStack,literalValues);
+        }
+
+        else {
+            return 0;
+        }
+        this.literalValues = literalValues;
+        this.operationTypeStack =operationTypeStack;
+        return 1;
+
     }
 
+    public Long runOperations(Stack<Integer> operationTypeStack,
+                              Stack<Long>  literalValues){
+        Integer numberOfLiteralValues = 0;
+        Long result = Long.valueOf(0);
+        while (!operationTypeStack.empty()) {
 
+            Integer typeID = operationTypeStack.pop();
+            System.out.println("typeID "+typeID + " size "+operationTypeStack.size());
+            System.out.println("size of literavl value "+literalValues.size());
+            if (typeID == 4) {
+                numberOfLiteralValues += 1;
+            } else {
+                if (operationTypeStack.empty())
+                {
+                    numberOfLiteralValues = literalValues.size();
+                }
+                List<Long> subListOfValues = new ArrayList<Long>();
+                for (int i = 0; i < numberOfLiteralValues; i++){
+                    Long element = literalValues.pop();
+                    subListOfValues.add(element);
+                }
+                /**
+                for (Integer i : subListOfValues) {
+                    System.out.println(i);
+                }
+                **/
+                //System.out.println(subListOfValues.size());
+                if (subListOfValues.size() == 1){
+                    result = subListOfValues.get(0);
+                }
+                else {
+                    result = performOperation(typeID, subListOfValues);
+                }
+                literalValues.add(0,result);
+                numberOfLiteralValues = 0;
+                //operationTypeStack.push(4);
+                //System.out.println("result "+result);
+            }
+        }
+    return result;
+    }
 
+    public Stack<Integer> getOperationTypeStack() {
+        return operationTypeStack;
+    }
 
+    public Stack<Long> getLiteralValues() {
+        return literalValues;
+    }
 }
